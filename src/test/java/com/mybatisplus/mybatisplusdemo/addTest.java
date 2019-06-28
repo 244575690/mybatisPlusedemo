@@ -24,4 +24,6 @@ public class addTest {
         System.err.println(user.getId());
 
     }
+	
+	public void delete （）{}
 }
