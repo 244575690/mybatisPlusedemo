@@ -1,17 +1,20 @@
-package com.mybatisplus.mybatisplusdemo.comtroller;
+package com.mybatisplus.mybatisplusdemo.controller;
 
 import com.mybatisplus.mybatisplusdemo.pojo.User;
 import com.mybatisplus.mybatisplusdemo.service.Userservice;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.repository.query.Param;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author ：HQ
  * @date ：Created in 2019/7/1 10:55
  * @description：集成redis并测试
  */
+//@Api(tags = "整合redis的测试")
 @RestController
 @RequestMapping("redis")
 public class RedisController {
@@ -19,7 +22,8 @@ public class RedisController {
     private Userservice uservice;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
-    @RequestMapping("addRedis")
+    @ApiOperation(value="添加数据到redis中", notes="")
+    @PostMapping("addRedis")
     public String addRedis(String key,String vale){
         // 保存字符串
         try {
@@ -35,8 +39,9 @@ public class RedisController {
     /**
      * 根据主键id查询数据
      */
-    @RequestMapping("getUserByRedis")
-    public User getUser(Long id){
+    @ApiOperation(value="根据数据的主键id查询对应的数据", notes="")
+    @RequestMapping(value = "/getUserByRedis",method = RequestMethod.POST)
+    public User getUser(@RequestParam("id") Long id){
         User user = uservice.getUserById(id);
         return user;
     }
@@ -47,9 +52,22 @@ public class RedisController {
      * @param name
      * @return
      */
-    @RequestMapping("updataUser")
+    @ApiOperation(value="修改数据", notes="")
+    @PostMapping("updataUser")
     public int updataUser(Long id,String name){
        return uservice.updateData(id,name);
+    }
+
+
+    /**
+     * 删除对应的数据
+     * @param id
+     * @return
+     */
+    @ApiOperation(value="删除数据", notes="")
+    @GetMapping("/deleteData")
+    public int deleteData(Long id){
+        return uservice.deleteUser(id);
     }
 
 }

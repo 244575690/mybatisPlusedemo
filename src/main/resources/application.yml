@@ -20,7 +20,7 @@ spring:
     timeout: 1200     # 连接超时时间（毫秒）
 logging:
   level:
-   root: warn
+#   root: warn
    com.mybatisplus.mybatisplusdemo.mapper: debug
   file: d:/logs/bsbdj.log
 

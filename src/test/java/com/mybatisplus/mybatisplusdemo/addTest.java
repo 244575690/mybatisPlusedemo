@@ -25,5 +25,4 @@ public class addTest {
 
     }
 	
-	public void delete （）{}
 }

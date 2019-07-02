@@ -48,7 +48,10 @@ public class Userservice {
             User user = valueOperations.get(key);
             long end = System.currentTimeMillis();
             System.out.println("查询redis花费的时间是:" + (end - start)+"s");
-            System.err.println(user.getName());
+            if(user!=null){
+                System.err.println(user.getName());
+            }
+
             System.err.println("==========================================");
 
             return user;
@@ -59,10 +62,13 @@ public class Userservice {
             User user = userMapper.selectById(id);
             long end = System.currentTimeMillis();
             System.out.println("查询mysql花费的时间是:" + (end - start)+"s");
-            System.err.println(user.getName());
+            if(user!=null){
+                System.err.println(user.getName());
+                //            将获得数据存入缓存中
+                valueOperations.set(key, user, 5, TimeUnit.HOURS);
+            }
             System.err.println("=======================================");
-//            将获得数据存入缓存中
-            valueOperations.set(key, user, 5, TimeUnit.HOURS);
+
             return user;
         }
     }
@@ -100,11 +106,44 @@ public class Userservice {
         return i;
     }
 
+    /**
+     * 查询所有的数据
+     * @return
+     * 策略：
+     */
+    /*public List<User> getAllUsers(){
+           String key  = "users";
+//           获取redis对象
+        ValueOperations<String,List<User>> ops = redisTemplate.opsForValue();
+//        判断redis中是否存在需要查询的数据，如果有，就从redis中获取并返回，如果没有，则到数据库中获取数据，并将获取的数据存入redis中并返回
+        Boolean hasKey = redisTemplate.hasKey(key);
+        if(hasKey){
+
+        }
+    }*/
 
 
-
-
-
-
-
+    /**
+     * 删除数据
+     * @param id
+     * @return
+     * 策略：先删除数据库中对应的数据，然后在判断redis中是否存在被删除的数据，如果存在，将redis中的数据也删除掉
+     */
+    public int deleteUser(Long id){
+//        拼接redis中的key值
+        String key = "user_"+id;
+        int i = userMapper.deleteById(id);
+        if(i!=0){
+//            判断缓存中是否存在该key值，如果存在，就将redis中的该key值对应的数据也删除掉
+//            获取redis对象
+            ValueOperations<String,User> ops = redisTemplate.opsForValue();
+//            判断是否存在
+            Boolean hasKey = redisTemplate.hasKey(key);
+            if(hasKey){
+                redisTemplate.delete(key);
+                System.err.println("删除redis中的数据");
+            }
+        }
+        return i;
+    }
 }
