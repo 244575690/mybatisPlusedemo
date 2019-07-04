@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * @author ：HQ
  * @date ：Created in 2019/7/1 10:55
- * @description：集成redis并测试
+ * @description：集成redis并通过代码实现缓存
  */
 //@Api(tags = "整合redis的测试")
 @RestController

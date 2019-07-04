@@ -3,6 +3,7 @@ package com.mybatisplus.mybatisplusdemo.service;
 import com.mybatisplus.mybatisplusdemo.mapper.UserMapper;
 import com.mybatisplus.mybatisplusdemo.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -145,5 +146,25 @@ public class Userservice {
             }
         }
         return i;
+    }
+
+
+    public User getOneUserById(Long id){
+        User user = userMapper.selectById(id);
+        System.err.println("通过数据库查询出来的");
+        return user;
+    }
+
+    public Integer updateUserById(Long id,String name,Integer age){
+        User user = new User();
+        user.setId(id);
+        user.setName(name);
+        user.setAge(age);
+        int i = userMapper.updateById(user);
+        return i;
+    }
+
+    public int deleteUserById(Long id){
+        return userMapper.deleteById(id);
     }
 }
